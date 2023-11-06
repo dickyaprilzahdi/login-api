@@ -5,7 +5,9 @@ import jwt from "jsonwebtoken";
 // Menampilkan Pengguna
 export const getUsers = async (req, res) => {
     try {
-        const users = await Users.findAll();
+        const users = await Users.findAll({
+            attributes: ['id', 'name', 'email']
+        });
         res.json(users);
     } catch (error) {
         console.log(error)
@@ -55,7 +57,7 @@ export const Login = async (req, res) => {
         const name = user[0].name;
         const email = user[0].email;
         const accessToken = jwt.sign({ userId, name, email }, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: '20s'
+            expiresIn: '15s'
         });
         const refreshToken = jwt.sign({ userId, name, email }, process.env.REFRESH_TOKEN_SECRET, {
             expiresIn: '1d'
@@ -73,7 +75,7 @@ export const Login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000
 
             // secure: true -> Berguna ketika sudah dihosting 
-        })
+        });
 
         res.json({accessToken});
 
